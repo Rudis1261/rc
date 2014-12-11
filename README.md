@@ -3,7 +3,7 @@ Tamiya RC car control, using **PIGPIO**
 
 ###Objective
 
-I need a software solution to be able to control my RC Car via an interface and the Raspbery Pi. I will be communicating with the PI via bluetooth, and sending as little commands as possible. The idea was to submit 2 different types of commands, the first being a service request (for lights etc), and the second being a control request (steering and throttle)
+I need a software solution to be able to control my RC Car via an interface and the Raspberry Pi. I will be communicating with the PI via bluetooth, and sending as little commands as possible. The idea was to submit 2 different types of commands, the first being a service request (for lights etc), and the second being a control request (steering and throttle)
 
 I am very bad at documenting things, so this is my effort to share my findings for the benefit of others.
 
