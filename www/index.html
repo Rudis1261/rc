@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap core CSS -->
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="assets/css/style.css" rel="stylesheet">
+    <link href="assets/css/slide-btn.css" rel="stylesheet">
+
+  </head>
+  <body>
+
+    <!-- TOP NAVIGATION -->
+    <nav class="navbar navbar-default navbar-fixed-top transition" role="navigation">
+      <div class="container">
+        <ul class="pull-right nav navbar-nav">
+          <li class="btn btn-default">
+            <i class="glyphicon glyphicon-off" onClick="navigator.app.exitApp();"></i>
+          </li>
+        </ul>
+        <a class="navbar-brand pull-left" href="#">
+          BRC
+          <img src="assets/img/bluetooth.png" />
+          <small>Remote Control</small>
+        </a>
+      </div>
+    </nav>
+
+    <!-- THE CONTENT TO DISPLAY -->
+    <div class="layout-main row">
+      <div class="center">
+
+        <div class="message-centre alert alert-danger transition">
+          Connection to server lost, attempting to reconnect now
+        </div>
+
+
+        <!-- DISPLAY BLUETOOTH OFF MESSAGE -->
+        <div class="status-off">
+          <div class="info-icon">
+            <i class="glyphicon glyphicon-exclamation-sign"></i>
+          </div>
+          <h2>Bluetooth Switched Off!</h2>
+          <div>
+            <p>sink needs Bluetooth to do it's magic. Without it, it has nobody to talk to.</p>
+            <p>Please consider enabling Bluetooth, and ensure that you have paired with the server.</p>
+          </div>
+        </div>
+
+        <div class="output"></div>
+
+        <div class="controls">
+          <div class="controls-throttle">
+            <div
+              data-type="drag-area"
+              data-axis="y"
+              class="control-stick control-stick-throttle rounded"
+            >
+              <div class="arrow arrow-up">
+                <i class="glyphicon glyphicon-arrow-up pull-up"></i>
+              </div>
+              <div class="deadzone deadzone-vertical">&nbsp;</div>
+              <div class="arrow arrow-down">
+                <i class="glyphicon glyphicon-arrow-down pull-down"></i>
+              </div>
+            </div>
+          </div>
+          <div class="controls-steering">
+            <div
+              data-type="drag-area"
+              data-axis="x"
+              class="control-stick control-stick-steering rounded"
+            >
+              <div class="arrow arrow-horizontal arrow-left">
+                <i class="glyphicon glyphicon-arrow-left"></i>
+              </div>
+              <div class="deadzone deadzone-horizontal">&nbsp;</div>
+              <div class="arrow arrow-horizontal arrow-right">
+                <i class="glyphicon glyphicon-arrow-right"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- DISPLAY BLUETOOTH NO DEVICE -->
+        <div class="no-devices">
+          <div class="info-icon">
+            <i class="glyphicon glyphicon-exclamation-sign"></i>
+          </div>
+          <h2>No Paired Bluetooth devices</h2>
+          <div>
+            <p>sink needs Bluetooth to do it's magic. Without it, it has nobody to talk to.</p>
+            <p>You have not connected "Paired" with any Bluetooth devices. Nothing paired, nothing to connect to sadly. Please open your Bluetooth settings and pair with the computer running the sink server.</p>
+          </div>
+        </div>
+
+
+
+        <!-- TO DISPLAY ON BLUETOOTH ON -->
+        <div class="status-on" align="center">
+
+          <!-- SLIDE BUTTON -->
+          <!-- <div class="slide-btn on" data-on="bth.connect" data-off="bth.disconnect">
+            <div class="slide"></div>
+          </div> -->
+
+          <div class="info-icon on">
+            <i class="glyphicon glyphicon-link"></i>
+          </div>
+
+          <p>Select the device we should connect to please</p>
+          <!-- PAIRED DEVICE LISTING -->
+          <div class="devices">
+            <h4>Paired Devices Available</h4>
+            <ul class="unstyled devices">
+            </ul>
+          </div>
+        </div>
+
+
+
+        <!-- TO DISPLAY ON BLUETOOTH ON -->
+        <div class="connected" align="center">
+
+          <!-- SLIDE BUTTON -->
+
+          <div class="info-icon on pull-left">
+            <i class="glyphicon glyphicon-ok-sign"></i>
+          </div>
+          <br />
+
+          <!-- SWIPE AREA -->
+          <div class="slide-btn on pull-right top-right"
+            style="width: 120px;"
+            data-on="$('.swipearea').show();$('.mousearea').hide();$('.mouse-btn').hide();"
+            data-off="$('.swipearea').hide();$('.mousearea').show();$('.mouse-btn').show();"
+            >
+            <div class="slide" data-on-label="Swipe Area" data-off-label="Mouse Area"></div>
+          </div>
+          <div class="clearfix"></div>
+
+          <div class="well swipearea">Swipe Area</div>
+          <div class="well mousearea" data-type="drag-area" style="display:none;">Mouse</div>
+
+          <div class="well touchable pull-left"  data-action="left">
+            <i class="glyphicon glyphicon-backward"></i>
+          </div>
+          <div class="well touchable pull-right" data-action="right">
+            <i class="glyphicon glyphicon-forward"></i>
+          </div>
+
+          <div class="mouse-btn" style="display: none;">
+            <a href="#" onClick="bth.action('click');" class="btn btn-lg btn-primary">Left Click</a>
+            <a href="#" onClick="bth.action('rclick');" class="btn btn-lg btn-default">Right Click</a>
+          </div>
+          <div class="clearfix"></div>
+
+          <!-- INFO AREA -->
+          <div class="form-group manual-command">
+            <label>Manually Send command</label>
+            <input type="text" class="form-control" placeholder="play">
+          </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script type="text/javascript" src="cordova.js"></script>
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/underscore-min.js"></script>
+    <script src="assets/js/jquery.touchSwipe.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/database.js"></script>
+    <script src="assets/js/slide-btn.js"></script>
+    <script src="assets/js/dragon.js"></script>
+    <script src="assets/js/bluetooth.js"></script>
+  </body>
+</html>
