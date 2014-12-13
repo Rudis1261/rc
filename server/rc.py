@@ -1,30 +1,35 @@
 #!/usr/bin/env python
-import sys
-import time
-import struct
-import pigpio
+import sys, time, struct, pigpio, thread, json
+
+
+def is_json(myjson):
+    try:
+        json_object = json.loads(myjson)
+    except ValueError, e:
+        return False
+    return True
+
 
 
 def lightsOn(LEFT, RIGHT, TAIL, START=140, RANGE=255):
 
     print("LIGHTS ON!")
-
     pi.set_PWM_range(LEFT, RANGE)
     pi.set_PWM_range(RIGHT, RANGE)
     pi.set_PWM_range(TAIL, RANGE)
 
-    pi.set_PWM_frequency(LEFT, 100)    
-    pi.set_PWM_frequency(RIGHT, 100)    
-    pi.set_PWM_frequency(TAIL, 100)  
+    pi.set_PWM_frequency(LEFT, 100)
+    pi.set_PWM_frequency(RIGHT, 100)
+    pi.set_PWM_frequency(TAIL, 100)
 
     pi.set_PWM_dutycycle(LEFT, START)
     pi.set_PWM_dutycycle(RIGHT, START)
-    pi.set_PWM_dutycycle(TAIL, 10)  
+    pi.set_PWM_dutycycle(TAIL, 10)
+    return True;
 
 
 
-
-def flashPass(LEFT, RIGHT, COUNT=3, START=140, TIME=0.08):
+def lightsFlash(LEFT, RIGHT, COUNT=3, START=140, TIME=0.08):
 
     print("FLASHING")
     for i in range(0, COUNT):
@@ -34,11 +39,11 @@ def flashPass(LEFT, RIGHT, COUNT=3, START=140, TIME=0.08):
  	pi.set_PWM_dutycycle(LEFT, START)
  	pi.set_PWM_dutycycle(RIGHT, START)
 	time.sleep(TIME)
+    return True;
 
 
 
-
-def flashStrobe(LEFT, RIGHT, COUNT=100, START=140, TIME=0.03):
+def lightsStrobe(LEFT, RIGHT, COUNT=100, START=140, TIME=0.03):
     print("STROBING")
     for i in range(0, COUNT):
 	pi.set_PWM_dutycycle(LEFT, 0)
@@ -49,23 +54,56 @@ def flashStrobe(LEFT, RIGHT, COUNT=100, START=140, TIME=0.03):
 	time.sleep(TIME)
     pi.set_PWM_dutycycle(LEFT, START)
     pi.set_PWM_dutycycle(RIGHT, START)
+    return True;
+
+
+
+def control(ENGINE=0.0, STEERING=0.0, E_PIN=MOTOR_PIN, S_PIN=SERVO_PIN):
+    engine(ENGINE, E_PIN)
+    steer(STEERING, S_PIN)
+
+
+
+def engine(SPEED=0.0, PIN, MIN=1000, NEUTRAL=1500, MAX=2000):
+    print("SPINNING UP")
+    if float(SPEED) == 0.0:
+        pi.set_servo_pulsewidth(PIN, NEUTRAL)
+    elif float(SPEED) > 0:
+        pi.set_servo_pulsewidth(PIN, NEUTRAL)
+    else:
+        try:
+            thread.start_new_thread(brake, (TAIL_PIN))
+        except:
+           print "Couldn't brake sadly"
+           pass
+        pi.set_servo_pulsewidth(PIN, NEUTRAL)
+
+
+
+
+def steer(SPEED=0.0, PIN, MIN=850, CENTER=1350, MAX=1750):
+    print("STEERING")
+    if float(SPEED) == 0.0:
+        pi.set_servo_pulsewidth(PIN, CENTER)
+    elif float(SPEED) > 0:
+        pi.set_servo_pulsewidth(PIN, CENTER)
+    else:
+        pi.set_servo_pulsewidth(PIN, CENTER)
 
 
 
 
 def brake(TAIL, RANGE=255, START=10, INTERVAL=10, TIME=0.04):
-
     print("Braking")
     for i in range(START, RANGE, INTERVAL):
         pi.set_PWM_dutycycle(TAIL, i)
  	time.sleep(TIME)
     pi.set_PWM_dutycycle(TAIL, START)
-
+    return True;
 
 
 
 def testPulse(PIN, TIME=0.04, LENGHT=10, PULSES=30, MIN=1, INTERVAL=1):
-
     print("Commencing Pulse")
     pulseRange = 255
     pi.set_PWM_range(PIN, pulseRange)
@@ -92,7 +130,7 @@ def testPulse(PIN, TIME=0.04, LENGHT=10, PULSES=30, MIN=1, INTERVAL=1):
 
 
 def testMotor(PIN, MIN=1000, NEUTRAL=1500, MAX=2000):
-    
+
     print("Commencing Motor Testing")
     time.sleep(3)
     pi.set_servo_pulsewidth(PIN, NEUTRAL)
@@ -143,30 +181,3 @@ def testServo(PIN, MIN=850, CENTER=1350, MAX=1750):
     time.sleep(0.5)
     pi.set_servo_pulsewidth(PIN, 0)
     print("Servo test complete")
-
-
-# Start the actual program
-GPIO  = 4
-SERVO = 7
-MOTOR = 8
-LEFT  = 11
-RIGHT = 10
-TAIL  = 9
-pi    = pigpio.pi()
-
-lightsOn(LEFT, RIGHT, TAIL)
-time.sleep(1)
-brake(TAIL)
-time.sleep(1)
-flashPass(LEFT, RIGHT)
-time.sleep(1)
-flashStrobe(LEFT, RIGHT)
-#exit()
-testServo(SERVO)
-testMotor(MOTOR)
-testPulse(GPIO)
-
-print("All done")
-
-# Clear everything up and stop using the GPIO
-pi.stop()
