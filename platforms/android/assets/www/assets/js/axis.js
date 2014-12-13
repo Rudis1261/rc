@@ -20,7 +20,7 @@
     var _dragging        = false;
     var _draggingX       = false;
     var _draggingY       = false;
-    var _trottleInput    = 30;
+    var _trottleInput    = 60;
     var _axisX           = $("[data-type='axis-area'][data-axis='x']");
     var _axisY           = $("[data-type='axis-area'][data-axis='y']");
     var _parentOffsetX   = _axisX.offset();
