@@ -15,14 +15,6 @@ TAIL_PIN  = 9
 # FIRE UP THE LIGHTS
 lightsOn(LEFT_PIN, RIGHT_PIN, TAIL_PIN)
 
-try:
-    thread.start_new_thread(lightsFlash, (LEFT_PIN, RIGHT_PIN))
-    thread.start_new_thread(brake, (TAIL_PIN))
-except:
-   print "Unable to start threading for lighting"
-   pass
-
-
 # BLUETOOTH SECTION
 server_sock=BluetoothSocket( RFCOMM )
 server_sock.bind(("",PORT_ANY))
@@ -45,13 +37,14 @@ while True:
             data = client_sock.recv(1024)
             if len(data) == 0: break
             print("COMMAND RECEIVED [%s]" % data)
-            JSON = json.loads(data)
+	    if is_json(data):
+                JSON = json.loads(data)
 
-            # We need JSON to work
-            if JSON['action'] == "control":
+                # We need JSON to work
+                if JSON['action'] == "control":
 
-                # Hand off command to the car
-                control(JSON['y'], JSON['x']):
+                    # Hand off command to the car
+                    control(JSON['y'], JSON['x'])
 
     except IOError:
         pass

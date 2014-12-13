@@ -1,6 +1,16 @@
 #!/usr/bin/env python
 import sys, time, struct, pigpio, thread, json
 
+pi = pigpio.pi()
+global BRAKING, FLASHING, LEFT_PIN, RIGHT_PIN
+GPIO_PIN = 4
+SERVO_PIN = 7
+MOTOR_PIN = 8
+LEFT_PIN = 11
+RIGHT_PIN = 10
+TAIL_PIN = 9
+BREAKING = False
+FLASHING = False
 
 def is_json(myjson):
     try:
@@ -13,7 +23,7 @@ def is_json(myjson):
 
 def lightsOn(LEFT, RIGHT, TAIL, START=140, RANGE=255):
 
-    print("LIGHTS ON!")
+    #print("LIGHTS ON!")
     pi.set_PWM_range(LEFT, RANGE)
     pi.set_PWM_range(RIGHT, RANGE)
     pi.set_PWM_range(TAIL, RANGE)
@@ -29,22 +39,22 @@ def lightsOn(LEFT, RIGHT, TAIL, START=140, RANGE=255):
 
 
 
-def lightsFlash(LEFT, RIGHT, COUNT=3, START=140, TIME=0.08):
+def lightsFlash(LEFT, RIGHT, COUNT=3, START=140, TIME=0.02):
 
-    print("FLASHING")
-    for i in range(0, COUNT):
-        pi.set_PWM_dutycycle(LEFT, 255)
-        pi.set_PWM_dutycycle(RIGHT, 255)
-        time.sleep(TIME)
- 	pi.set_PWM_dutycycle(LEFT, START)
- 	pi.set_PWM_dutycycle(RIGHT, START)
-	time.sleep(TIME)
+    global FLASHING
+    if FLASHING: 
+        for i in range(0, COUNT):
+            pi.set_PWM_dutycycle(LEFT, 255)
+            pi.set_PWM_dutycycle(RIGHT, 255)
+            time.sleep(TIME)
+ 	    pi.set_PWM_dutycycle(LEFT, START)
+ 	    pi.set_PWM_dutycycle(RIGHT, START)
+	    time.sleep(TIME)
     return True;
 
 
 
 def lightsStrobe(LEFT, RIGHT, COUNT=100, START=140, TIME=0.03):
-    print("STROBING")
     for i in range(0, COUNT):
 	pi.set_PWM_dutycycle(LEFT, 0)
 	pi.set_PWM_dutycycle(RIGHT, 255)
@@ -64,40 +74,64 @@ def control(ENGINE=0.0, STEERING=0.0, E_PIN=MOTOR_PIN, S_PIN=SERVO_PIN):
 
 
 
-def engine(SPEED=0.0, PIN, MIN=1000, NEUTRAL=1500, MAX=2000):
-    print("SPINNING UP")
+def engine(SPEED=0.0, PIN=MOTOR_PIN, MIN=1000, NEUTRAL=1500, MAX=2000):
+    SPEED = float(SPEED)
+    global BREAKING, FLASHING, LEFT_PIN, RIGHT_PIN
     if float(SPEED) == 0.0:
+        BREAKING = False
         pi.set_servo_pulsewidth(PIN, NEUTRAL)
+    
     elif float(SPEED) > 0:
-        pi.set_servo_pulsewidth(PIN, NEUTRAL)
+	BREAKING = False
+	VALUE = MAX - NEUTRAL
+	VALUE_AFTER = MAX - VALUE + (VALUE * (SPEED / 100))
+	#print(VALUE)
+	#print(VALUE_AFTER)
+        pi.set_servo_pulsewidth(PIN, VALUE_AFTER)
+	if int(SPEED) > 90 and FLASHING == False:
+            FLASHING = True
+	    thread.start_new_thread(lightsFlash, (LEFT_PIN, RIGHT_PIN))
+	else:
+	    FLASHING = False	
+
     else:
-        try:
-            thread.start_new_thread(brake, (TAIL_PIN))
-        except:
-           print "Couldn't brake sadly"
-           pass
-        pi.set_servo_pulsewidth(PIN, NEUTRAL)
+        if BREAKING == False:
+	    BREAKING = True
+            thread.start_new_thread(brake, (9, 255))
+
+	VALUE = NEUTRAL - MIN
+        VALUE_AFTER = MIN + VALUE + (VALUE * (SPEED / 100))
+        #print(VALUE)
+        #print(VALUE_AFTER)
+        pi.set_servo_pulsewidth(PIN, VALUE_AFTER)
 
 
 
 
-def steer(SPEED=0.0, PIN, MIN=850, CENTER=1350, MAX=1750):
-    print("STEERING")
+def steer(SPEED=0.0, PIN=SERVO_PIN, MIN=850, CENTER=1350, MAX=1750):
+    SPEED = float(SPEED)
     if float(SPEED) == 0.0:
         pi.set_servo_pulsewidth(PIN, CENTER)
     elif float(SPEED) > 0:
-        pi.set_servo_pulsewidth(PIN, CENTER)
+        VALUE = MAX - CENTER
+        VALUE_AFTER = MAX - VALUE + (VALUE * (SPEED / 100))
+        pi.set_servo_pulsewidth(PIN, int(VALUE_AFTER))
     else:
-        pi.set_servo_pulsewidth(PIN, CENTER)
+	VALUE = CENTER - MIN
+	VALUE_AFTER = MIN + VALUE + (VALUE * (SPEED / 100))
+        pi.set_servo_pulsewidth(PIN, int(VALUE_AFTER))
 
 
 
 
 def brake(TAIL, RANGE=255, START=10, INTERVAL=10, TIME=0.04):
-    print("Braking")
+    #print("Braking")
+    global BREAKING
     for i in range(START, RANGE, INTERVAL):
         pi.set_PWM_dutycycle(TAIL, i)
  	time.sleep(TIME)
+    while BREAKING:
+	pi.set_PWM_dutycycle(TAIL, 255)
     pi.set_PWM_dutycycle(TAIL, START)
     return True;
 
