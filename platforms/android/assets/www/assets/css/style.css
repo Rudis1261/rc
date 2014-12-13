@@ -348,7 +348,7 @@ background-image: linear-gradient(to bottom, #4F4F4F 0%, #3D3D3D 100%);
 .arrow-up { width: 71px; }
 .arrow-down { width: 77px; }
 
-.output {
+.axis-output {
   background: #2171b5;
   color: white;
   width: 105px;
@@ -367,4 +367,25 @@ background-image: linear-gradient(to bottom, #4F4F4F 0%, #3D3D3D 100%);
   -webkit-border-bottom-left-radius: 5px;
   -moz-border-radius-bottomleft: 5px;
   border-bottom-left-radius: 5px;
+}
+
+.axis-activity {
+  background: maroon;
+  color: white;
+  width: 105px;
+  height: 30px;
+  display: block;
+  position: absolute;
+  bottom: 0px;
+  font-size: 13px;
+  border-left: 1px solid #333;
+  border-top: 1px solid #333;
+  box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.36);
+  right: 0;
+  font-weight: bold;
+  text-align: center;
+  line-height: 30px;
+  -webkit-border-top-left-radius: 5px;
+  -moz-border-radius-topleft: 5px;
+  border-top-left-radius: 5px;
 }

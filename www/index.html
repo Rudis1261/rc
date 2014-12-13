@@ -51,40 +51,9 @@
           </div>
         </div>
 
-        <div class="output"></div>
+        <div class="axis-output"></div>
+        <div class="axis-activity"></div>
 
-        <div class="controls">
-          <div class="controls-throttle">
-            <div
-              data-type="drag-area"
-              data-axis="y"
-              class="control-stick control-stick-throttle rounded"
-            >
-              <div class="arrow arrow-up">
-                <i class="glyphicon glyphicon-arrow-up pull-up"></i>
-              </div>
-              <div class="deadzone deadzone-vertical">&nbsp;</div>
-              <div class="arrow arrow-down">
-                <i class="glyphicon glyphicon-arrow-down pull-down"></i>
-              </div>
-            </div>
-          </div>
-          <div class="controls-steering">
-            <div
-              data-type="drag-area"
-              data-axis="x"
-              class="control-stick control-stick-steering rounded"
-            >
-              <div class="arrow arrow-horizontal arrow-left">
-                <i class="glyphicon glyphicon-arrow-left"></i>
-              </div>
-              <div class="deadzone deadzone-horizontal">&nbsp;</div>
-              <div class="arrow arrow-horizontal arrow-right">
-                <i class="glyphicon glyphicon-arrow-right"></i>
-              </div>
-            </div>
-          </div>
-        </div>
 
 
         <!-- DISPLAY BLUETOOTH NO DEVICE -->
@@ -125,47 +94,44 @@
 
 
         <!-- TO DISPLAY ON BLUETOOTH ON -->
-        <div class="connected" align="center">
+        <!-- <div class="connected" align="center"> -->
 
-          <!-- SLIDE BUTTON -->
-
-          <div class="info-icon on pull-left">
-            <i class="glyphicon glyphicon-ok-sign"></i>
+          <!-- REMOTE CONTROL INTERFACE -->
+          <div class="controls">
+            <div class="controls-throttle">
+              <div
+                data-type="axis-area"
+                data-axis="y"
+                class="control-stick control-stick-throttle rounded"
+              >
+                <div class="arrow arrow-up">
+                  <i class="glyphicon glyphicon-arrow-up pull-up"></i>
+                </div>
+                <div class="deadzone deadzone-vertical">&nbsp;</div>
+                <div class="arrow arrow-down">
+                  <i class="glyphicon glyphicon-arrow-down pull-down"></i>
+                </div>
+              </div>
+            </div>
+            <div class="controls-steering">
+              <div
+                data-type="axis-area"
+                data-axis="x"
+                class="control-stick control-stick-steering rounded"
+              >
+                <div class="arrow arrow-horizontal arrow-left">
+                  <i class="glyphicon glyphicon-arrow-left"></i>
+                </div>
+                <div class="deadzone deadzone-horizontal">&nbsp;</div>
+                <div class="arrow arrow-horizontal arrow-right">
+                  <i class="glyphicon glyphicon-arrow-right"></i>
+                </div>
+              </div>
+            </div>
           </div>
-          <br />
+          <!-- REMOTE CONTROL INTERFACE -->
 
-          <!-- SWIPE AREA -->
-          <div class="slide-btn on pull-right top-right"
-            style="width: 120px;"
-            data-on="$('.swipearea').show();$('.mousearea').hide();$('.mouse-btn').hide();"
-            data-off="$('.swipearea').hide();$('.mousearea').show();$('.mouse-btn').show();"
-            >
-            <div class="slide" data-on-label="Swipe Area" data-off-label="Mouse Area"></div>
-          </div>
-          <div class="clearfix"></div>
-
-          <div class="well swipearea">Swipe Area</div>
-          <div class="well mousearea" data-type="drag-area" style="display:none;">Mouse</div>
-
-          <div class="well touchable pull-left"  data-action="left">
-            <i class="glyphicon glyphicon-backward"></i>
-          </div>
-          <div class="well touchable pull-right" data-action="right">
-            <i class="glyphicon glyphicon-forward"></i>
-          </div>
-
-          <div class="mouse-btn" style="display: none;">
-            <a href="#" onClick="bth.action('click');" class="btn btn-lg btn-primary">Left Click</a>
-            <a href="#" onClick="bth.action('rclick');" class="btn btn-lg btn-default">Right Click</a>
-          </div>
-          <div class="clearfix"></div>
-
-          <!-- INFO AREA -->
-          <div class="form-group manual-command">
-            <label>Manually Send command</label>
-            <input type="text" class="form-control" placeholder="play">
-          </div>
-        </div>
+        <!-- </div> -->
     </div>
 
     <!-- Bootstrap core JavaScript
@@ -179,6 +145,7 @@
     <script src="assets/js/database.js"></script>
     <script src="assets/js/slide-btn.js"></script>
     <script src="assets/js/dragon.js"></script>
+    <script src="assets/js/axis.js"></script>
     <script src="assets/js/bluetooth.js"></script>
   </body>
 </html>

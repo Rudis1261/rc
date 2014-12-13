@@ -133,6 +133,7 @@
 /home/rudis1261/Projects/android/brc/platforms/android/assets/www/assets/fonts/glyphicons-halflings-regular.svg \
 /home/rudis1261/Projects/android/brc/platforms/android/assets/www/assets/fonts/glyphicons-halflings-regular.eot \
 /home/rudis1261/Projects/android/brc/platforms/android/assets/www/assets/js/jquery.js \
+/home/rudis1261/Projects/android/brc/platforms/android/assets/www/assets/js/axis.js \
 /home/rudis1261/Projects/android/brc/platforms/android/assets/www/assets/js/jquery.min.js \
 /home/rudis1261/Projects/android/brc/platforms/android/assets/www/assets/js/jquery.min.map \
 /home/rudis1261/Projects/android/brc/platforms/android/assets/www/assets/js/slide-btn.js \
