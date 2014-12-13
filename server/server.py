@@ -3,6 +3,9 @@ import sys, time, struct, pigpio, thread, json
 from bluetooth import *
 from rc import *
 
+global LAST_ACTIVE
+LAST_ACTIVE = int(time.time())
+
 # Start the actual program
 pi        = pigpio.pi()
 GPIO_PIN  = 4
@@ -28,6 +31,16 @@ advertise_service( server_sock, "sinkServer",
    profiles         = [ SERIAL_PORT_PROFILE ]
 )
 
+def janitor():
+    global LAST_ACTIVE
+    while 1:
+	print("JANITOR: Testing, " + str(LAST_ACTIVE))
+	if (LAST_ACTIVE + 3) < time.time():
+	    print("JANITOR: Zeroing Controls")
+	    zeroControls(MOTOR_PIN, SERVO_PIN)
+	time.sleep(1)
+
+thread.start_new_thread(janitor, ())
 print("READY FOR CONNECTIONS, RFCOMM channel %d" % port)
 while True:
     client_sock, client_info = server_sock.accept()
@@ -38,6 +51,7 @@ while True:
             if len(data) == 0: break
             print("COMMAND RECEIVED [%s]" % data)
 	    if is_json(data):
+		LAST_ACTIVE = int(time.time())
                 JSON = json.loads(data)
 
                 # We need JSON to work

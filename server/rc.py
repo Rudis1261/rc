@@ -68,6 +68,12 @@ def lightsStrobe(LEFT, RIGHT, COUNT=100, START=140, TIME=0.03):
 
 
 
+def zeroControls(E_PIN, S_PIN):
+    pi.set_servo_pulsewidth(E_PIN, 1500)
+    pi.set_servo_pulsewidth(S_PIN, 1350)
+ 
+
+
 def control(ENGINE=0.0, STEERING=0.0, E_PIN=MOTOR_PIN, S_PIN=SERVO_PIN):
     engine(ENGINE, E_PIN)
     steer(STEERING, S_PIN)
