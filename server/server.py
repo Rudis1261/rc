@@ -13,10 +13,15 @@ SERVO_PIN = 7
 MOTOR_PIN = 8
 LEFT_PIN  = 11
 RIGHT_PIN = 10
-TAIL_PIN  = 9
+TAIL_L_PIN = 9
+TAIL_R_PIN = 25
+
 
 # FIRE UP THE LIGHTS
-lightsOn(LEFT_PIN, RIGHT_PIN, TAIL_PIN)
+lightsOn(LEFT_PIN, RIGHT_PIN, TAIL_L_PIN, TAIL_R_PIN)
+thread.start_new_thread(lightsStrobeAll, (True, 0.04))
+time.sleep(5)
+thread.start_new_thread(lightsStrobeAll, (False, 0))
 
 # BLUETOOTH SECTION
 server_sock=BluetoothSocket( RFCOMM )
@@ -35,10 +40,10 @@ def janitor():
     global LAST_ACTIVE
     while 1:
 	print("JANITOR: Testing, " + str(LAST_ACTIVE))
-	if (LAST_ACTIVE + 3) < time.time():
+	if (LAST_ACTIVE + 1) < time.time():
 	    print("JANITOR: Zeroing Controls")
 	    zeroControls(MOTOR_PIN, SERVO_PIN)
-	time.sleep(1)
+	time.sleep(0.5)
 
 thread.start_new_thread(janitor, ())
 print("READY FOR CONNECTIONS, RFCOMM channel %d" % port)

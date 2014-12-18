@@ -8,9 +8,11 @@ SERVO_PIN = 7
 MOTOR_PIN = 8
 LEFT_PIN = 11
 RIGHT_PIN = 10
-TAIL_PIN = 9
+TAIL_L_PIN = 9
+TAIL_R_PIN = 25
 BREAKING = False
 FLASHING = False
+STROBING = False
 
 def is_json(myjson):
     try:
@@ -21,20 +23,24 @@ def is_json(myjson):
 
 
 
-def lightsOn(LEFT, RIGHT, TAIL, START=140, RANGE=255):
+def lightsOn(LEFT, RIGHT, TAIL_L, TAIL_R, START=140, RANGE=255):
 
-    #print("LIGHTS ON!")
+    time.sleep(1)
+    print("LIGHTS ON!")
     pi.set_PWM_range(LEFT, RANGE)
     pi.set_PWM_range(RIGHT, RANGE)
-    pi.set_PWM_range(TAIL, RANGE)
+    pi.set_PWM_range(TAIL_L, RANGE)
+    pi.set_PWM_range(TAIL_R, RANGE)
 
     pi.set_PWM_frequency(LEFT, 100)
     pi.set_PWM_frequency(RIGHT, 100)
-    pi.set_PWM_frequency(TAIL, 100)
+    pi.set_PWM_frequency(TAIL_L, 100)
+    pi.set_PWM_frequency(TAIL_R, 100)
 
     pi.set_PWM_dutycycle(LEFT, START)
     pi.set_PWM_dutycycle(RIGHT, START)
-    pi.set_PWM_dutycycle(TAIL, 10)
+    pi.set_PWM_dutycycle(TAIL_L, 10)
+    pi.set_PWM_dutycycle(TAIL_R, 10)
     return True;
 
 
@@ -66,6 +72,30 @@ def lightsStrobe(LEFT, RIGHT, COUNT=100, START=140, TIME=0.03):
     pi.set_PWM_dutycycle(RIGHT, START)
     return True;
 
+
+
+def lightsStrobeAll(START=False, TIME=0.03, SLEEP=0.2):
+    global LEFT_PIN, RIGHT_PIN, TAIL_L_PIN, TAIL_R_PIN, STROBING, BREAKING
+    sequence = [LEFT_PIN, RIGHT_PIN, TAIL_L_PIN, TAIL_R_PIN]
+    if START:
+	STROBING = True
+    else:
+	STROBING = False
+	return lightsOn(LEFT_PIN, RIGHT_PIN, TAIL_L_PIN, TAIL_R_PIN) 
+    for i in sequence:
+ 	pi.set_PWM_dutycycle(i, 0)
+    while STROBING:
+	if BREAKING == False:
+            for i in sequence:
+                print("Strobing " + str(i) + " Pin")
+                pi.set_PWM_dutycycle(i, 255)
+                time.sleep(TIME)
+                pi.set_PWM_dutycycle(i, 0)
+                time.sleep(TIME)
+                pi.set_PWM_dutycycle(i, 255)
+                time.sleep(TIME)
+                pi.set_PWM_dutycycle(i, 0)
+                time.sleep(SLEEP)
 
 
 def zeroControls(E_PIN, S_PIN):
@@ -103,7 +133,7 @@ def engine(SPEED=0.0, PIN=MOTOR_PIN, MIN=1000, NEUTRAL=1500, MAX=2000):
     else:
         if BREAKING == False:
 	    BREAKING = True
-            thread.start_new_thread(brake, (9, 255))
+            thread.start_new_thread(brake, (9, 25, 255))
 
 	VALUE = NEUTRAL - MIN
         VALUE_AFTER = MIN + VALUE + (VALUE * (SPEED / 100))
@@ -130,16 +160,20 @@ def steer(SPEED=0.0, PIN=SERVO_PIN, MIN=850, CENTER=1350, MAX=1750):
 
 
 
-def brake(TAIL, RANGE=255, START=10, INTERVAL=10, TIME=0.04):
+def brake(TAIL_L, TAIL_R, RANGE=255, START=10, INTERVAL=10, TIME=0.04):
     #print("Braking")
     global BREAKING
     for i in range(START, RANGE, INTERVAL):
-        pi.set_PWM_dutycycle(TAIL, i)
+        pi.set_PWM_dutycycle(TAIL_L, i)
+        pi.set_PWM_dutycycle(TAIL_R, i)
  	time.sleep(TIME)
     while BREAKING:
-	pi.set_PWM_dutycycle(TAIL, 255)
-    pi.set_PWM_dutycycle(TAIL, START)
+	pi.set_PWM_dutycycle(TAIL_L, 255)
+	pi.set_PWM_dutycycle(TAIL_R, 255)
+    pi.set_PWM_dutycycle(TAIL_L, START)
+    pi.set_PWM_dutycycle(TAIL_R, START)
     return True;
+
 
 
 
