@@ -23,6 +23,7 @@
     var _trottleInput    = 60;
     var _axisX           = $("[data-type='axis-area'][data-axis='x']");
     var _axisY           = $("[data-type='axis-area'][data-axis='y']");
+    var _controls        = $("[data-type='controls']");
     var _parentOffsetX   = _axisX.offset();
     var _parentOffsetY   = _axisY.offset();
     var _startX          = Math.round(_axisX.width() / 2);
@@ -93,6 +94,16 @@
         mouseleave:     function(event) { _complete(event, $(this)); },
         touchend:       function(event) { _complete(event, $(this)); },
         touchleave:     function(event) { _complete(event, $(this)); }
+    });
+
+
+    // Let's control the lights somewhat
+    $(document).ready(function(){
+
+        // Manually run additional commands
+        $(_controls).click(function(event){
+            bth.action($(this).data('type'));
+        });
     });
 
 

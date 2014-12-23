@@ -9,6 +9,7 @@
 
     <!-- Custom styles for this template -->
     <link href="assets/css/style.css" rel="stylesheet">
+    <link href="assets/css/flaticon.css" rel="stylesheet">
     <link href="assets/css/slide-btn.css" rel="stylesheet">
 
   </head>
@@ -17,6 +18,28 @@
     <!-- TOP NAVIGATION -->
     <nav class="navbar navbar-default navbar-fixed-top transition" role="navigation">
       <div class="container">
+
+        <!-- TOP ICONS - LIGHTS -->
+        <ul class="nav navbar-nav btn-group">
+          <li class="btn btn-default">
+            <i class="flaticon-lights flaticon-bold" onClick="bth.action('light');"></i>
+          </li>
+          <li class="btn btn-default">
+            <i class="flaticon-flash flaticon-bold" onClick="bth.action('strobe');"></i>
+          </li>
+        </ul>
+
+        &nbsp;&nbsp;&nbsp;&nbsp;
+
+        <!-- TOP ICONS - CONTROLS -->
+        <ul class="nav navbar-nav btn-group">
+          <li class="btn btn-default">
+            <i class="flaticon-vector1 flaticon-bold" data-type="controls" data-value="linear"></i>
+          </li>
+          <li class="btn btn-default">
+            <i class="flaticon-vector flaticon-bold"  data-type="controls" data-value="vector"></i>
+          </li>
+        </ul>
         <ul class="pull-right nav navbar-nav">
           <li class="btn btn-default">
             <i class="glyphicon glyphicon-off" onClick="navigator.app.exitApp();"></i>
